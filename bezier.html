@@ -1,0 +1,135 @@
+<html>
+<body>
+<canvas id="screen" style="border:1px solid #000" width=640 height=480 />
+</body>
+<script type="text/javascript">
+
+    // Demonstration of bezier curves by recursive definition
+    // For the purposes of this, a point is an object with x and y members
+
+    var c = document.getElementById("screen");
+    var ctx = c.getContext("2d");
+
+    // Linearly interpolate between a and b
+
+    var lerp = function(a, b, t) {
+          return a + t * (b - a);
+    }
+
+    // Linearly interpolate between two points
+
+    var lerpPt = function(p0, p1, t) {
+        return {
+            x: lerp(p0.x, p1.x, t),
+            y: lerp(p0.y, p1.y, t)
+        };
+    }
+
+    // first-order - literally just lerping between two points
+
+    var firstOrder = function(p0, p1) {
+        return function(t) {
+            return lerpPt(p0, p1, t);
+        }
+    }
+
+    // second order - lerp between two first-order functions
+
+    var secondOrder = function(p0, p1, p2) {
+        var f1 = firstOrder(p0, p1);
+        var f2 = firstOrder(p1, p2);
+        return function(t) {
+            var pf1 = f1(t);
+            var pf2 = f2(t);
+            return lerpPt(pf1, pf2, t);
+        }
+    }
+
+    // third order - lerp between two second-order functions
+
+    var thirdOrder = function(p0, p1, p2, p3) {
+          var f1 = secondOrder(p0, p1, p2);
+          var f2 = secondOrder(p1, p2, p3);
+          return function(t) {
+              var pf1 = f1(t);
+              var pf2 = f2(t);
+              return lerpPt(pf1, pf2, t);
+          }
+    }
+
+    var drawCurve = function(ctx, bezier_function, origin) {
+        ctx.moveTo(origin.x, origin.y);
+
+        // If we go from 0 to 1 in 1/steps increments, we run into FP rounding
+        // errors; this ensures we always get a complete curve
+        var steps = 100;
+        for(t = 0; t <= steps; t += 1)
+        {
+            var pt = bezier_function(t / steps);
+            ctx.lineTo(pt.x, pt.y);
+        }
+    }
+
+    var p0 = { x: 100, y: 100 };
+    var p1 = { x: 400, y: 400 };
+    var p2 = { x: 500, y: 100 };
+    var p3 = { x: 100, y: 550 };
+
+    var first = firstOrder(p0, p1);
+    var second = secondOrder(p0, p2, p1);
+    var third = thirdOrder(p0, p2, p3, p1);
+
+
+    drawCurve(ctx, first, p0);
+    drawCurve(ctx, second, p0);
+    drawCurve(ctx, third, p0);
+
+    ctx.stroke();
+
+    var p0 = { x: 0, y: 0 };
+    var p1 = { x: 0.25, y: 1};
+    var p2 = { x: 0.75, y: -1};
+    var p3 = { x: 1, y: 0 };
+    var f = thirdOrder(p0, p1, p2, p3);
+    var points = [];
+    var resolution = 48000;
+
+    for(t = 0; t <= resolution; t++) {
+        points.push(f(t / resolution));
+    }
+
+    // Sampling?
+    var idx = 0, success = 0, fail = 0, cont = 0, deltaAcc = 0.0
+    var THRESHOLD = 1 / (2*resolution);
+    var found = [];
+    var newPoints = [];
+    for(x = 0; x <= resolution; x++) {
+        var xx = x / resolution;
+        do {
+            var delta = points[idx].x - xx;
+
+            if (Math.abs(delta) < THRESHOLD) {
+                success ++; deltaAcc += Math.abs(delta);
+                found.push( [ points[idx].x, xx, "Yes"] );
+                newPoints.push( { x: xx, y: points[idx].y } );
+                break;
+            }
+
+            if(delta > 0) {
+                fail ++; deltaAcc += Math.abs(delta);
+                found.push( [ points[idx].x, xx, "No"] );
+                newPoints.push( { x: xx, y: points[idx].y } );
+                break;
+            }
+
+            cont++;
+            idx++;
+        } while (idx < resolution);
+
+    }
+
+    console.log("<p>Success: " + success + ", fail: " + fail);
+    console.log(", cont: " + cont + ", DeltaAcc: " + deltaAcc + "</p>");
+
+</script>
+</html>
