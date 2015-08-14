@@ -42,10 +42,12 @@
         points.push(f(t / resolution));
     };
 
-    var scale = Dimension(400, 400);
-    renderer.drawScaledPoints(points, Point(100, 320), scale );
+    var scale = Dimension(400, 200);
+    renderer.drawScaledPoints(points, Point(100, 200), scale );
 
-    var result = sampling.sample(resolution, points);
+    var result = sampling.nearest_neighbour(resolution, points);
+
+    renderer.drawScaledPoints(result.sampledData, Point(100, 400), scale);
 
     console.log("<p>Success: " + result.success + ", fail: " + result.fail);
     console.log(", cont: " + result.cont + ", DeltaAcc: " + result.deltaAcc + "</p>");

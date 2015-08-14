@@ -1,6 +1,6 @@
 var sampling = (function() {
 
-    var sample = function(resolution, data) {
+    var nearest_neighbour = function(resolution, data) {
         // Sampling?
         var idx = 0, success = 0, fail = 0, cont = 0, deltaAcc = 0.0;
         var THRESHOLD = 1 / (2*resolution);
@@ -14,15 +14,13 @@ var sampling = (function() {
 
                 if (Math.abs(delta) < THRESHOLD) {
                     success ++; deltaAcc += Math.abs(delta);
-                    found.push( [ data[idx].x, xx, "Yes"] );
-                    sampledData.push( { x: xx, y: data[idx].y } );
+                    sampledData.push(Point(xx, data[idx].y));
                     break;
                 }
 
                 if(delta > 0) {
                     fail ++; deltaAcc += Math.abs(delta);
-                    found.push( [ data[idx].x, xx, "No"] );
-                    sampledData.push( { x: xx, y: data[idx].y } );
+                    sampledData.push(Point(xx, data[idx].y));
                     break;
                 }
                 cont++;
@@ -38,6 +36,6 @@ var sampling = (function() {
         };
     }
 
-    return {sample : sample};
+    return {nearest_neighbour : nearest_neighbour};
 
 })();
