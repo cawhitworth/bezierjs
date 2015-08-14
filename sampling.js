@@ -43,6 +43,36 @@ var sampling = (function() {
         };
     }
 
-    return {nearest_neighbour : nearest_neighbour};
+    var interpolated = function(resolution, data) {
+        var idx = 0;
+        var sampledData = [];
+        for(x = 0; x <= resolution; x++)
+        {
+            var xx = x/resolution;
+            do {
+                var p1 = data[idx];
+                var p2 = data[idx+1];
+
+                if(p1.x <= xx &&
+                   p2.x >= xx)
+                {
+                    var d = p2.x - p1.x;
+                    var dp1 = (xx-p1.x) / d;
+
+                    var y = bezier.lerp( data[idx].y, data[idx+1].y, dp1 );
+                    sampledData.push( Point(xx, y) );
+                    break;
+                }
+                idx ++;
+            } while (idx <= resolution)
+        }
+
+        return { sampledData : sampledData };
+    }
+
+    return {
+        nearest_neighbour : nearest_neighbour,
+        interpolated: interpolated
+    };
 
 })();

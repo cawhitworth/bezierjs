@@ -43,7 +43,10 @@ var bezier = (function() {
           }
     }
 
-    return { firstOrder: firstOrder,
-             secondOrder: secondOrder,
-             thirdOrder: thirdOrder };
+    return {
+        lerp: lerp,
+        firstOrder: firstOrder,
+        secondOrder: secondOrder,
+        thirdOrder: thirdOrder
+    };
 })();

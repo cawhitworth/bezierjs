@@ -48,12 +48,11 @@
     renderer.drawScaledPoints(points, Point(100, 200), scale );
 
     var result = sampling.nearest_neighbour(resolution, points);
-
     ctx.strokeStyle = '#00ff00';
     renderer.drawScaledPoints(result.sampledData, Point(100, 200), scale);
 
-    console.log("<p>Success: " + result.success + ", fail: " + result.fail);
-    console.log(", cont: " + result.cont + ", DeltaAcc: " + result.deltaAcc + "</p>");
-
+    var result = sampling.interpolated(resolution, points);
+    ctx.strokeStyle = '#0000ff';
+    renderer.drawScaledPoints(result.sampledData, Point(100, 200), scale);
 </script>
 </html>
