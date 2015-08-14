@@ -25,9 +25,9 @@
     var second = bezier.secondOrder(p0, p2, p1);
     var third = bezier.thirdOrder(p0, p2, p3, p1);
 
-    renderer.drawCurve(first, p0);
-    renderer.drawCurve(second, p0);
-    renderer.drawCurve(third, p0);
+    renderer.drawCurve(first);
+    renderer.drawCurve(second);
+    renderer.drawCurve(third);
 
     var p0 = Point(0,0);
     var p1 = Point(0.25,1);

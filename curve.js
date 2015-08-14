@@ -1,18 +1,22 @@
 var curve = function(ctx) {
 
-    var drawCurve = function(bezier_function, origin) {
-        ctx.beginPath();
-        ctx.moveTo(origin.x, origin.y);
+    var resolution = 100;
 
-        // If we go from 0 to 1 in 1/steps increments, we run into FP rounding
-        // errors; this ensures we always get a complete curve
-        var steps = 100;
-        for(t = 0; t <= steps; t += 1)
+    var drawCurve = function(bezier_function, origin) {
+        origin = origin || Point(0,0);
+        drawScaledCurve(bezier_function, origin, Dimension(1,1));
+    }
+
+    var drawScaledCurve = function(bezier_function, origin, scale) {
+        ctx.beginPath();
+        var start = bezier_function(0).translateBy(origin);
+        ctx.moveTo(start.x, start.y);
+
+        for(t = 1; t <= resolution; t += 1)
         {
-            var pt = bezier_function(t / steps);
-            ctx.lineTo(pt.x, pt.y);
+            var pt = bezier_function(t / resolution).scaleBy(scale).translateBy(origin);
+            ctx.lineTo(pt.x, pt.y)
         }
-        console.log("Woo");
         ctx.stroke();
     }
 
