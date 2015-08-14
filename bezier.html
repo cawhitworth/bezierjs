@@ -40,7 +40,10 @@
 
     for(t = 0; t <= resolution; t++) {
         points.push(f(t / resolution));
-    }
+    };
+
+    var scale = Dimension(400, 400);
+    renderer.drawScaledPoints(points, Point(100, 320), scale );
 
     var result = sampling.sample(resolution, points);
 
