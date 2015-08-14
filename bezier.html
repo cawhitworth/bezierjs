@@ -1,58 +1,25 @@
 <html>
-<body>
-<canvas id="screen" style="border:1px solid #000" width=640 height=480 />
-</body>
-<script type-"text/javascript" src="2d.js"></script>
+<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="2d.js"></script>
 <script type="text/javascript" src="bezier.js"></script>
 <script type="text/javascript" src="curve.js"></script>
 <script type="text/javascript" src="sampling.js"></script>
-<script type="text/javascript">
+<script type="text/javascript" src="main.js"></script>
+<body>
+    <div>
+        <canvas id="screen" style="border:1px solid #000" width=800 height=600 />
+    </div>
+    <div>
+        <p>p0: X: <input class="coord" id="p0x" type="number" value="0.0"/>
+        Y: <input class="coord" id="p0y" type="number" value="0.0"/></p>
+        <p>p1: X: <input class="coord" id="p1x" type="number" value="1.0"/>
+        Y: <input class="coord" id="p1y" type="number" value="4.0"/></p>
+        <p>p2: X: <input class="coord" id="p2x" type="number" value="0.25"/>
+        Y: <input class="coord" id="p2y" type="number" value="-2.0" step = "0.0"/></p>
+        <p>p3: X: <input class="coord" id="p3x" type="number" value="1.0"/>
+        Y: <input class="coord" id="p3y" type="number" value="0.0" /></p>
+        <p>Resolution: <input id="resolution" type="number" value="20" /></p>
+    </div>
 
-    // Demonstration of bezier curves by recursive definition
-    // For the purposes of this, a point is an object with x and y members
-
-    var c = document.getElementById("screen");
-    var ctx = c.getContext("2d");
-
-    var renderer = curve(ctx);
-/*
-    var p0 = Point(100, 100);
-    var p1 = Point(400, 400);
-    var p2 = Point(500, 100);
-    var p3 = Point(100, 550);
-
-    var first = bezier.firstOrder(p0, p1);
-    var second = bezier.secondOrder(p0, p2, p1);
-    var third = bezier.thirdOrder(p0, p2, p3, p1);
-
-    renderer.drawCurve(first);
-    renderer.drawCurve(second);
-    renderer.drawCurve(third);
-*/
-    var p0 = Point(0,0);
-    var p1 = Point(0.25,1);
-    var p2 = Point(0.75, -1);
-    var p3 = Point(1,0);
-
-    var f = bezier.thirdOrder(p0, p1, p2, p3);
-    var points = [];
-    var resolution = 20;
-
-    for(t = 0; t <= resolution; t++) {
-        points.push(f(t / resolution));
-    };
-    
-    ctx.strokeStyle = '#ff0000';
-
-    var scale = Dimension(400, 200);
-    renderer.drawScaledPoints(points, Point(100, 200), scale );
-
-    var result = sampling.nearest_neighbour(resolution, points);
-    ctx.strokeStyle = '#00ff00';
-    renderer.drawScaledPoints(result.sampledData, Point(100, 200), scale);
-
-    var result = sampling.interpolated(resolution, points);
-    ctx.strokeStyle = '#0000ff';
-    renderer.drawScaledPoints(result.sampledData, Point(100, 200), scale);
-</script>
+</body>
 </html>

@@ -1,6 +1,6 @@
 var Point = function(x,y) {
-    var x = x;
-    var y = y;
+    var x = Number(x);
+    var y = Number(y);
 
     var scaleBy = function(dimensions) {
         return Point(x * dimensions.w, y * dimensions.h);
@@ -19,8 +19,8 @@ var Point = function(x,y) {
 };
 
 var Dimension = function(w,h) {
-    var _w = w;
-    var _h = h;
+    var _w = Number(w);
+    var _h = Number(h);
 
     return {
         w: _w,
