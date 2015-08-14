@@ -15,7 +15,7 @@
     var ctx = c.getContext("2d");
 
     var renderer = curve(ctx);
-
+/*
     var p0 = Point(100, 100);
     var p1 = Point(400, 400);
     var p2 = Point(500, 100);
@@ -28,7 +28,7 @@
     renderer.drawCurve(first);
     renderer.drawCurve(second);
     renderer.drawCurve(third);
-
+*/
     var p0 = Point(0,0);
     var p1 = Point(0.25,1);
     var p2 = Point(0.75, -1);
@@ -36,18 +36,21 @@
 
     var f = bezier.thirdOrder(p0, p1, p2, p3);
     var points = [];
-    var resolution = 48000;
+    var resolution = 20;
 
     for(t = 0; t <= resolution; t++) {
         points.push(f(t / resolution));
     };
+    
+    ctx.strokeStyle = '#ff0000';
 
     var scale = Dimension(400, 200);
     renderer.drawScaledPoints(points, Point(100, 200), scale );
 
     var result = sampling.nearest_neighbour(resolution, points);
 
-    renderer.drawScaledPoints(result.sampledData, Point(100, 400), scale);
+    ctx.strokeStyle = '#00ff00';
+    renderer.drawScaledPoints(result.sampledData, Point(100, 200), scale);
 
     console.log("<p>Success: " + result.success + ", fail: " + result.fail);
     console.log(", cont: " + result.cont + ", DeltaAcc: " + result.deltaAcc + "</p>");
