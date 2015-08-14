@@ -3,6 +3,8 @@
 <canvas id="screen" style="border:1px solid #000" width=640 height=480 />
 </body>
 <script type="text/javascript" src="bezier.js"></script>
+<script type="text/javascript" src="curve.js"></script>
+<script type="text/javascript" src="sampling.js"></script>
 <script type="text/javascript">
 
     // Demonstration of bezier curves by recursive definition
@@ -11,19 +13,7 @@
     var c = document.getElementById("screen");
     var ctx = c.getContext("2d");
 
-
-    var drawCurve = function(ctx, bezier_function, origin) {
-        ctx.moveTo(origin.x, origin.y);
-
-        // If we go from 0 to 1 in 1/steps increments, we run into FP rounding
-        // errors; this ensures we always get a complete curve
-        var steps = 100;
-        for(t = 0; t <= steps; t += 1)
-        {
-            var pt = bezier_function(t / steps);
-            ctx.lineTo(pt.x, pt.y);
-        }
-    }
+    var renderer = curve(ctx);
 
     var p0 = { x: 100, y: 100 };
     var p1 = { x: 400, y: 400 };
@@ -35,17 +25,15 @@
     var third = bezier.thirdOrder(p0, p2, p3, p1);
 
 
-    drawCurve(ctx, first, p0);
-    drawCurve(ctx, second, p0);
-    drawCurve(ctx, third, p0);
-
-    ctx.stroke();
+    renderer.drawCurve(first, p0);
+    renderer.drawCurve(second, p0);
+    renderer.drawCurve(third, p0);
 
     var p0 = { x: 0, y: 0 };
     var p1 = { x: 0.25, y: 1};
     var p2 = { x: 0.75, y: -1};
     var p3 = { x: 1, y: 0 };
-    var f = thirdOrder(p0, p1, p2, p3);
+    var f = bezier.thirdOrder(p0, p1, p2, p3);
     var points = [];
     var resolution = 48000;
 
@@ -53,38 +41,10 @@
         points.push(f(t / resolution));
     }
 
-    // Sampling?
-    var idx = 0, success = 0, fail = 0, cont = 0, deltaAcc = 0.0
-    var THRESHOLD = 1 / (2*resolution);
-    var found = [];
-    var newPoints = [];
-    for(x = 0; x <= resolution; x++) {
-        var xx = x / resolution;
-        do {
-            var delta = points[idx].x - xx;
+    var result = sampling.sample(resolution, points);
 
-            if (Math.abs(delta) < THRESHOLD) {
-                success ++; deltaAcc += Math.abs(delta);
-                found.push( [ points[idx].x, xx, "Yes"] );
-                newPoints.push( { x: xx, y: points[idx].y } );
-                break;
-            }
-
-            if(delta > 0) {
-                fail ++; deltaAcc += Math.abs(delta);
-                found.push( [ points[idx].x, xx, "No"] );
-                newPoints.push( { x: xx, y: points[idx].y } );
-                break;
-            }
-
-            cont++;
-            idx++;
-        } while (idx < resolution);
-
-    }
-
-    console.log("<p>Success: " + success + ", fail: " + fail);
-    console.log(", cont: " + cont + ", DeltaAcc: " + deltaAcc + "</p>");
+    console.log("<p>Success: " + result.success + ", fail: " + result.fail);
+    console.log(", cont: " + result.cont + ", DeltaAcc: " + result.deltaAcc + "</p>");
 
 </script>
 </html>
