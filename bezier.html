@@ -2,6 +2,7 @@
 <body>
 <canvas id="screen" style="border:1px solid #000" width=640 height=480 />
 </body>
+<script type-"text/javascript" src="2d.js"></script>
 <script type="text/javascript" src="bezier.js"></script>
 <script type="text/javascript" src="curve.js"></script>
 <script type="text/javascript" src="sampling.js"></script>
@@ -15,24 +16,24 @@
 
     var renderer = curve(ctx);
 
-    var p0 = { x: 100, y: 100 };
-    var p1 = { x: 400, y: 400 };
-    var p2 = { x: 500, y: 100 };
-    var p3 = { x: 100, y: 550 };
+    var p0 = Point(100, 100);
+    var p1 = Point(400, 400);
+    var p2 = Point(500, 100);
+    var p3 = Point(100, 550);
 
     var first = bezier.firstOrder(p0, p1);
     var second = bezier.secondOrder(p0, p2, p1);
     var third = bezier.thirdOrder(p0, p2, p3, p1);
 
-
     renderer.drawCurve(first, p0);
     renderer.drawCurve(second, p0);
     renderer.drawCurve(third, p0);
 
-    var p0 = { x: 0, y: 0 };
-    var p1 = { x: 0.25, y: 1};
-    var p2 = { x: 0.75, y: -1};
-    var p3 = { x: 1, y: 0 };
+    var p0 = Point(0,0);
+    var p1 = Point(0.25,1);
+    var p2 = Point(0.75, -1);
+    var p3 = Point(1,0);
+
     var f = bezier.thirdOrder(p0, p1, p2, p3);
     var points = [];
     var resolution = 48000;

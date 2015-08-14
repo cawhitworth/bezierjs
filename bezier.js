@@ -8,10 +8,7 @@ var bezier = (function() {
     // Linearly interpolate between two points
 
     var lerpPt = function(p0, p1, t) {
-        return {
-            x: lerp(p0.x, p1.x, t),
-            y: lerp(p0.y, p1.y, t)
-        };
+        return Point(lerp(p0.x, p1.x, t), lerp(p0.y, p1.y, t));
     }
 
     // first-order - literally just lerping between two points
